@@ -4,7 +4,12 @@ const app = express()
 // get the port from env variable
 const PORT = process.env.PORT || 3000
 
+app.get('/version', (_req, res) => {
+  res.send('1')
+})
+
 app.use(express.static('dist'))
+
 
 app.listen(PORT, () => {
   console.log(`server started on port ${PORT}`)
