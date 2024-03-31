@@ -26,12 +26,12 @@ jobs:
       - name: Build Prod
         run: npm run build
       - name: Deploy to fly.io
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && !contains(join(github.event.head_commit.message,' '), '#skip') }} 
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }} 
   tag_release:
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'push' && !contains(join(github.event.head_commit.message,' '), '#skip') }} 
     needs: [simple-deployment-pipeline]
     runs-on: ubuntu-20.04   
     permissions:
