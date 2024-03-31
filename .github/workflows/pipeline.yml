@@ -30,6 +30,21 @@ jobs:
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }} 
+      - name: Discord Build Success Notify
+        if: ${{success()}}
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: info
+          text: A new version of Pokedex/jlyon12 has been deployed
+          description: to https://full-stack-open-pokedex-jlyon12.fly.dev/
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Discord Build Fail Notify
+        if: ${{failure()}}
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: error
+          text: Build Failure on Pokedex/jlyon12 
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
   tag_release:
     if: ${{ github.event_name == 'push' && !contains(join(github.event.head_commit.message,' '), '#skip') }} 
     needs: [simple-deployment-pipeline]
